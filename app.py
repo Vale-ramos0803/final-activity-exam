@@ -1,22 +1,7 @@
-import os, pathlib
 
-# ──────────────────────────────────────────────────────────────────────────────
-# 1) Redirect HOME so that pathlib.Path.home() → /mnt/data (writable in Spaces)
-os.environ["HOME"] = "/mnt/data"
-pathlib.Path.home = lambda *a, **k: pathlib.Path("/mnt/data")
-
-# 2) Make the .streamlit config directory there
-home = pathlib.Path.home()
-config_dir = home / ".streamlit"
-config_dir.mkdir(parents=True, exist_ok=True)
-
-# 3) Disable usage stats (write config.toml into that dir)
-with open(config_dir / "config.toml", "w") as f:
-    f.write("[browser]\n")
-    f.write("gatherUsageStats = false\n")
-# ──────────────────────────────────────────────────────────────────────────────
 
 # Now it’s safe to import everything else
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
