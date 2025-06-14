@@ -1,20 +1,12 @@
 
 
 # Now it’s safe to import everything else
-import os
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pickle
+import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.metrics import classification_report, confusion_matrix
-from wordcloud import WordCloud
-from datasets import load_dataset
 from huggingface_hub import hf_hub_download
-
 
 
 
@@ -23,16 +15,16 @@ st.set_page_config(page_title="Hate Speech Detection App", layout="wide")
 st.title("🚨 Hate Speech Detection App")
 st.write("Use the sidebar to navigate between pages.")
 
-# Load model and tokenizer
+# Download & load your large .h5 model from HF Hub
 @st.cache_resource
 def load_model():
-    # This downloads & caches the model file at runtime
-    path = hf_hub_download(
+    model_path = hf_hub_download(
         repo_id="ValeriaRamos8/final-activity-model",
         filename="Final_Activity.h5"
     )
-    return tf.keras.models.load_model(path)
+    return tf.keras.models.load_model(model_path)
 
+# Download & load the tokenizer
 @st.cache_resource
 def load_tokenizer():
     tok_path = hf_hub_download(
@@ -41,6 +33,9 @@ def load_tokenizer():
     )
     with open(tok_path, "rb") as f:
         return pickle.load(f)
+
+model = load_model()
+tokenizer = load_tokenizer()
 
 
 # Load dataset from Hugging Face Datasets
